@@ -129,5 +129,5 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
     }
   }
 
-  bool _isFirstPage(int page) => page == 1;
+  bool _isFirstPage(int page) => page == 0;
 }

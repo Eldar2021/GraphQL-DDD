@@ -28,12 +28,17 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   Hive.init(dr.path);
   final box = await Hive.openBox<String>('data');
 
-  final gqlClient = GraphQLClient(
+  final homeClient = GraphQLClient(
     cache: GraphQLCache(),
     link: HttpLink('https://rickandmortyapi.com/graphql'),
   );
 
-  setup(box, gqlClient);
+  final todoClient = GraphQLClient(
+    cache: GraphQLCache(),
+    link: HttpLink('https://graphqlzero.almansi.me/api'),
+  );
+
+  setup(box, homeClient, todoClient);
 
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);

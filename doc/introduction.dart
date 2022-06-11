@@ -10,4 +10,9 @@ https://www.back4app.com/docs/flutter/graphql/flutter-crud-app-example
 
 https://www.waldo.com/blog/graphql-in-flutter
 
+todo
+https://graphqlzero.almansi.me/api
+https://graphql.org/learn/
+https://github1s.com/Eldar2021/GraphQL-DDD/blob/HEAD/lib/src/module/home/domain/usecase/get_characters_usecase.dart
+
 */

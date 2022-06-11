@@ -20,8 +20,9 @@ class App extends StatelessWidget {
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
       ],
+      onGenerateRoute: AppRouter.onGenerateRoute,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const TodoPage(),
+      // home: const TodoPage(),
     );
   }
 }

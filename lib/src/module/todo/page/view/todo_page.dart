@@ -39,6 +39,12 @@ class TodoView extends StatelessWidget {
           UsersFetchView(),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRouter.addTodo);
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

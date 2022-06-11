@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphql_ddd/src/module/todo/data/repo/todo_repository_impl.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:hive/hive.dart';
 
@@ -53,11 +52,15 @@ void setup(
     ..registerLazySingleton<TodoLocalDataSource>(
       () => TodoLocalRepoImpl(box),
     )
+    ..registerLazySingleton<AddTodoRemoteDataSource>(
+      () => AddTodoRemoteDataSource(todoClient),
+    )
     ..registerLazySingleton<TodoRepository>(
       () => TodoRepoImpl(
         sl<NetworkInfo>(),
         sl<TodoLocalDataSource>(),
         sl<TodoRemoteDataSource>(),
+        sl<AddTodoRemoteDataSource>(),
       ),
     )
     ..registerLazySingleton<GetUsersUsecase>(
@@ -66,10 +69,16 @@ void setup(
     ..registerLazySingleton<GetTodosUsecase>(
       () => GetTodosUsecase(sl<TodoRepository>()),
     )
+    ..registerLazySingleton(
+      () => AddTodoUsecase(sl<TodoRepository>()),
+    )
     ..registerFactory<TodoCubit>(
       () => TodoCubit(sl<GetTodosUsecase>()),
     )
     ..registerFactory<UsersCubit>(
       () => UsersCubit(sl<GetUsersUsecase>()),
+    )
+    ..registerFactory<AddTodoCubit>(
+      () => AddTodoCubit(sl<AddTodoUsecase>()),
     );
 }

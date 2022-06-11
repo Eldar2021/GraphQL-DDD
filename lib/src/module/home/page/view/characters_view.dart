@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -11,8 +12,8 @@ class CharactersView extends StatefulWidget {
   State<CharactersView> createState() => _CharactersViewState();
 }
 
-// ignore: lines_longer_than_80_chars
-class _CharactersViewState extends State<CharactersView> with PaginationMixin<Character> {
+class _CharactersViewState extends State<CharactersView>
+    with PaginationMixin<Character>, AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     pagingController.addPageRequestListener(fetchPage);
@@ -21,6 +22,7 @@ class _CharactersViewState extends State<CharactersView> with PaginationMixin<Ch
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('CharactersView'),
@@ -31,8 +33,13 @@ class _CharactersViewState extends State<CharactersView> with PaginationMixin<Ch
         builderDelegate: PagedChildBuilderDelegate<Character>(
           itemBuilder: (context, item, index) => Card(
             child: ListTile(
-              leading: Text(item.id),
+              leading: CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(
+                  item.image ?? 'https://picsum.photos/200/300',
+                ),
+              ),
               title: Text(item.name),
+              subtitle: Text(item.species ?? ''),
             ),
           ),
         ),
@@ -44,4 +51,7 @@ class _CharactersViewState extends State<CharactersView> with PaginationMixin<Ch
   Future<List<Character>> fetchData(int page) {
     return context.read<HomeCubit>().getCharactersInPage(page);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

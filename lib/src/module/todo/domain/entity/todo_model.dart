@@ -1,7 +1,7 @@
-import 'entity.dart';
+import '../../../../src.dart';
 
-class Todo {
-  Todo({
+class Todo extends Model {
+  const Todo({
     required this.id,
     required this.title,
     required this.completed,
@@ -17,6 +17,7 @@ class Todo {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
@@ -30,4 +31,7 @@ class Todo {
   final String title;
   final bool completed;
   final User user;
+
+  @override
+  List<Object?> get props => [id];
 }

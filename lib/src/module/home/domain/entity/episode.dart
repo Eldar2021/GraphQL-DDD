@@ -1,6 +1,6 @@
-import 'package:equatable/equatable.dart';
+import '../../../../src.dart';
 
-class Episode extends Equatable {
+class Episode extends Model {
   const Episode({
     required this.id,
     required this.name,
@@ -17,6 +17,7 @@ class Episode extends Equatable {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,

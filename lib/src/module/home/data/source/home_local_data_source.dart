@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:graphql_ddd/src/core/core.dart';
 import 'package:graphql_ddd/src/module/module.dart';
 import 'package:hive/hive.dart';
@@ -22,7 +20,7 @@ abstract class HomeLocalDataSource {
   Future<void> cacheLocations(List<Location> models, int page);
 }
 
-class HomeLocalDataSourceImpl implements HomeLocalDataSource {
+class HomeLocalDataSourceImpl extends HomeLocalDataSource with HiveMixin {
   HomeLocalDataSourceImpl(this._box);
 
   final Box<String> _box;
@@ -30,12 +28,7 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   Future<void> cacheCharacters(List<Character> models, int page) async {
     try {
-      if (_isFirstPage(page)) {
-        await _box.put(
-          cachedCharacters,
-          json.encode(models.map<dynamic>((e) => e.toJson()).toList()),
-        );
-      }
+      if (_isFirstPage(page)) await put(cachedCharacters, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -44,12 +37,7 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   Future<void> cacheEpisodes(List<Episode> models, int page) async {
     try {
-      if (_isFirstPage(page)) {
-        await _box.put(
-          cachedEpisodes,
-          json.encode(models.map<dynamic>((e) => e.toJson()).toList()),
-        );
-      }
+      if (_isFirstPage(page)) await put(cachedEpisodes, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -58,12 +46,7 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   Future<void> cacheLocations(List<Location> models, int page) async {
     try {
-      if (_isFirstPage(page)) {
-        await _box.put(
-          cachedLocations,
-          json.encode(models.map<dynamic>((e) => e.toJson()).toList()),
-        );
-      }
+      if (_isFirstPage(page)) await put(cachedLocations, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -72,15 +55,9 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   List<Character>? getLastCharacters(int page) {
     try {
-      final modelsString = _box.get(cachedCharacters);
-
+      final modelsString = get(cachedCharacters);
       if (_isFirstPage(page) && modelsString != null) {
-        final listModel = json.decode(modelsString) as List;
-        return listModel
-            .map<Character>(
-              (dynamic e) => Character.fromJson(e as Map<String, dynamic>),
-            )
-            .toList();
+        return modelType<Character>(modelsString, Character.fromJson);
       } else {
         return null;
       }
@@ -92,15 +69,9 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   List<Episode>? getLastEpisodes(int page) {
     try {
-      final modelsString = _box.get(cachedEpisodes);
-
+      final modelsString = get(cachedEpisodes);
       if (_isFirstPage(page) && modelsString != null) {
-        final listModel = json.decode(modelsString) as List;
-        return listModel
-            .map<Episode>(
-              (dynamic e) => Episode.fromJson(e as Map<String, dynamic>),
-            )
-            .toList();
+        return modelType<Episode>(modelsString, Episode.fromJson);
       } else {
         return null;
       }
@@ -112,15 +83,9 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   @override
   List<Location>? getLastLocations(int page) {
     try {
-      final modelsString = _box.get(cachedLocations);
-
+      final modelsString = get(cachedLocations);
       if (_isFirstPage(page) && modelsString != null) {
-        final listModel = json.decode(modelsString) as List;
-        return listModel
-            .map<Location>(
-              (dynamic e) => Location.fromJson(e as Map<String, dynamic>),
-            )
-            .toList();
+        return modelType<Location>(modelsString, Location.fromJson);
       } else {
         return null;
       }
@@ -130,4 +95,7 @@ class HomeLocalDataSourceImpl implements HomeLocalDataSource {
   }
 
   bool _isFirstPage(int page) => page == 0;
+
+  @override
+  Box<String> get box => _box;
 }

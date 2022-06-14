@@ -1,5 +1,7 @@
-class User {
-  User({
+import '../../../../src.dart';
+
+class User extends Model {
+  const User({
     required this.id,
     required this.name,
   });
@@ -11,6 +13,7 @@ class User {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
@@ -20,4 +23,7 @@ class User {
 
   final String id;
   final String name;
+
+  @override
+  List<Object?> get props => [id];
 }

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hive/hive.dart';
 
 import '../../../../src.dart';
@@ -17,7 +15,7 @@ abstract class TodoLocalDataSource {
   Future<void> cacheUsers(List<User> models);
 }
 
-class TodoLocalRepoImpl implements TodoLocalDataSource {
+class TodoLocalRepoImpl extends TodoLocalDataSource with HiveMixin {
   TodoLocalRepoImpl(this._box);
 
   final Box<String> _box;
@@ -25,10 +23,7 @@ class TodoLocalRepoImpl implements TodoLocalDataSource {
   @override
   Future<void> cacheTodos(List<Todo> models) async {
     try {
-      await _box.put(
-        cachedTodos,
-        json.encode(models.map((e) => e.toJson()).toList()),
-      );
+      await put(cachedTodos, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -37,10 +32,7 @@ class TodoLocalRepoImpl implements TodoLocalDataSource {
   @override
   Future<void> cacheUsers(List<User> models) async {
     try {
-      await _box.put(
-        cachedUsers,
-        json.encode(models.map((e) => e.toJson()).toList()),
-      );
+      await put(cachedUsers, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -48,14 +40,9 @@ class TodoLocalRepoImpl implements TodoLocalDataSource {
 
   @override
   List<Todo>? getTodos() {
-    final modelString = _box.get(cachedTodos);
+    final modelString = get(cachedTodos);
     if (modelString != null) {
-      final listModel = json.decode(modelString) as List;
-      return listModel
-          .map<Todo>(
-            (dynamic e) => Todo.fromJson(e as Map<String, dynamic>),
-          )
-          .toList();
+      return modelType<Todo>(modelString, Todo.fromJson);
     } else {
       return null;
     }
@@ -63,16 +50,14 @@ class TodoLocalRepoImpl implements TodoLocalDataSource {
 
   @override
   List<User>? getUsers() {
-    final modelString = _box.get(cachedUsers);
+    final modelString = get(cachedUsers);
     if (modelString != null) {
-      final listModel = json.decode(modelString) as List;
-      return listModel
-          .map<User>(
-            (dynamic e) => User.fromJson(e as Map<String, dynamic>),
-          )
-          .toList();
+      return modelType<User>(modelString, User.fromJson);
     } else {
       return null;
     }
   }
+
+  @override
+  Box<String> get box => _box;
 }

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../src.dart';
 
-class HomeRepoImpl implements HomeReposiory {
+class HomeRepoImpl extends HomeReposiory with RepoMixin {
   HomeRepoImpl(
     this._localDataSource,
     this._remoteDataSource,
@@ -15,62 +15,34 @@ class HomeRepoImpl implements HomeReposiory {
 
   @override
   Future<Either<Exception, List<Character>>> getCharacters(int page) async {
-    if (await _networkInfo.isConnected()) {
-      try {
-        final _models = await _remoteDataSource.getCharacters(page);
-        await _localDataSource.cacheCharacters(_models, page);
-        return Right(_models);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    } else {
-      try {
-        final _models = _localDataSource.getLastCharacters(page);
-        return Right(_models ?? []);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    }
+    return responsePage<Character>(
+      _remoteDataSource.getCharacters,
+      _localDataSource.cacheCharacters,
+      _localDataSource.getLastCharacters,
+      page,
+    );
   }
 
   @override
   Future<Either<Exception, List<Episode>>> getEpisodes(int page) async {
-    if (await _networkInfo.isConnected()) {
-      try {
-        final _models = await _remoteDataSource.getEpisodes(page);
-        
-        await _localDataSource.cacheEpisodes(_models, page);
-        return Right(_models);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    } else {
-      try {
-        final _models = _localDataSource.getLastEpisodes(page);
-        return Right(_models ?? []);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    }
+    return responsePage<Episode>(
+      _remoteDataSource.getEpisodes,
+      _localDataSource.cacheEpisodes,
+      _localDataSource.getLastEpisodes,
+      page,
+    );
   }
 
   @override
   Future<Either<Exception, List<Location>>> getLocations(int page) async {
-    if (await _networkInfo.isConnected()) {
-      try {
-        final _models = await _remoteDataSource.getLocations(page);
-        await _localDataSource.cacheLocations(_models, page);
-        return Right(_models);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    } else {
-      try {
-        final _models = _localDataSource.getLastLocations(page);
-        return Right(_models ?? []);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    }
+    return responsePage<Location>(
+      _remoteDataSource.getLocations,
+      _localDataSource.cacheLocations,
+      _localDataSource.getLastLocations,
+      page,
+    );
   }
+
+  @override
+  NetworkInfo get networkInfo => _networkInfo;
 }

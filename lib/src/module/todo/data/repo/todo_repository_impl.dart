@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../src.dart';
 
-class TodoRepoImpl implements TodoRepository {
+class TodoRepoImpl extends TodoRepository with RepoMixin {
   TodoRepoImpl(
     this._networkInfo,
     this._localDataSource,
@@ -17,43 +17,20 @@ class TodoRepoImpl implements TodoRepository {
 
   @override
   Future<Either<Exception, List<Todo>>> getTodos() async {
-    if (await _networkInfo.isConnected()) {
-      try {
-        final _models = await _remoteDataSource.getTodos();
-
-        await _localDataSource.cacheTodos(_models);
-        return Right(_models);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    } else {
-      try {
-        final _models = _localDataSource.getTodos();
-        return Right(_models ?? []);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    }
+    return response<Todo>(
+      _remoteDataSource.getTodos,
+      _localDataSource.cacheTodos,
+      _localDataSource.getTodos,
+    );
   }
 
   @override
   Future<Either<Exception, List<User>>> getUsers() async {
-    if (await _networkInfo.isConnected()) {
-      try {
-        final _models = await _remoteDataSource.getUsers();
-        await _localDataSource.cacheUsers(_models);
-        return Right(_models);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    } else {
-      try {
-        final _models = _localDataSource.getUsers();
-        return Right(_models ?? []);
-      } catch (e) {
-        return Left(ServerExc('$e'));
-      }
-    }
+    return response<User>(
+      _remoteDataSource.getUsers,
+      _localDataSource.cacheUsers,
+      _localDataSource.getUsers,
+    );
   }
 
   @override
@@ -75,4 +52,7 @@ class TodoRepoImpl implements TodoRepository {
       return Left(NetworkExc(null));
     }
   }
+
+  @override
+  NetworkInfo get networkInfo => _networkInfo;
 }

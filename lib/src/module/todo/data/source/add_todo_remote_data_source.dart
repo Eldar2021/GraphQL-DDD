@@ -11,7 +11,7 @@ class AddTodoRemoteDataSource with GraphQLMixin {
   // ignore: avoid_positional_boolean_parameters
   Future<AddToDoModel> addTodoModel(String title, bool completed) async {
     try {
-      final res = await mutation(addTodoMutation(title, completed));
+      final res = await mutation(GqlQuery.addTodoMutation(title, completed));
       // ignore: avoid_dynamic_calls
       final json = res.data?['createTodo'] as Map<String, dynamic>;
 
@@ -25,13 +25,3 @@ class AddTodoRemoteDataSource with GraphQLMixin {
   @override
   GraphQLClient get client => _client;
 }
-
-// ignore: avoid_positional_boolean_parameters
-String addTodoMutation(String title, bool completed) => '''
-mutation{
-  createTodo(input: {title: "$title", completed: $completed}){
-    id
-    title
-    completed
-  }
-}''';

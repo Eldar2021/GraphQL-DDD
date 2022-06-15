@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql/client.dart';
 
 mixin GraphQLMixin {
   GraphQLClient get client;

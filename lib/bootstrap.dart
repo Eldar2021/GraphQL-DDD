@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql/client.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 

@@ -12,16 +12,10 @@ class LocationsView extends StatefulWidget {
 }
 
 class _LocationsViewState extends State<LocationsView>
-    with PaginationMixin<Location>, AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    pagingController.addPageRequestListener(fetchPage);
-    super.initState();
-  }
-
+    with PaginationMixin<Location, LocationsView> {
+      
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('LocationsView'),
@@ -45,7 +39,4 @@ class _LocationsViewState extends State<LocationsView>
   Future<List<Location>> fetchData(int page) {
     return context.read<HomeCubit>().getLocationsInPage(page);
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -13,16 +13,10 @@ class CharactersView extends StatefulWidget {
 }
 
 class _CharactersViewState extends State<CharactersView>
-    with PaginationMixin<Character>, AutomaticKeepAliveClientMixin {
-  @override
-  void initState() {
-    pagingController.addPageRequestListener(fetchPage);
-    super.initState();
-  }
-
+    with PaginationMixin<Character, CharactersView> {
+      
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('CharactersView'),
@@ -48,10 +42,7 @@ class _CharactersViewState extends State<CharactersView>
   }
 
   @override
-  Future<List<Character>> fetchData(int page) {
+  Future<List<Character>> fetchData(int page) async {
     return context.read<HomeCubit>().getCharactersInPage(page);
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

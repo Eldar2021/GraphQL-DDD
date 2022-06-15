@@ -11,18 +11,10 @@ class EpisodesView extends StatefulWidget {
   State<EpisodesView> createState() => _EpisodesViewState();
 }
 
-class _EpisodesViewState extends State<EpisodesView>
-    with PaginationMixin<Episode>, AutomaticKeepAliveClientMixin {
-
-  @override
-  void initState() {
-    pagingController.addPageRequestListener(fetchPage);
-    super.initState();
-  }
-
+// ignore: lines_longer_than_80_chars
+class _EpisodesViewState extends State<EpisodesView> with PaginationMixin<Episode, EpisodesView> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('EpisodesView'),
@@ -46,7 +38,4 @@ class _EpisodesViewState extends State<EpisodesView>
   Future<List<Episode>> fetchData(int page) {
     return context.read<HomeCubit>().getEpisodeInPage(page);
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -1,8 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-mixin PaginationMixin<T> {
-  final pagingController = PagingController<int, T>(firstPageKey: 0);
-  Future<List<T>> fetchData(int page);
+mixin PaginationMixin<P, T extends StatefulWidget> on State<T> {
+  final pagingController = PagingController<int, P>(firstPageKey: 0);
+  Future<List<P>> fetchData(int page);
+
+  @override
+  void initState() {
+    pagingController.addPageRequestListener(fetchPage);
+    super.initState();
+  }
 
   Future<void> fetchPage(int p) async {
     try {
@@ -16,5 +23,11 @@ mixin PaginationMixin<T> {
     } catch (error) {
       pagingController.error = error;
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pagingController.dispose();
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../../src.dart';
 
+/// With Out Use case and Domain
+
 class App extends StatelessWidget {
   const App({super.key});
 

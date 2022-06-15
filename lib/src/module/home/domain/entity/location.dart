@@ -27,11 +27,11 @@ class Location extends Model {
     };
   }
 
-  @override
-  List<Object?> get props => [id];
-
   final String id;
   final String name;
   final String type;
   final String dimension;
+
+  @override
+  List<Object?> get props => [id];
 }

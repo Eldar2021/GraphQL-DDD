@@ -27,11 +27,11 @@ class Episode extends Model {
     };
   }
 
-  @override
-  List<Object?> get props => [id];
-
   final String id;
   final String name;
   final String airDate;
   final String episode;
+
+  @override
+  List<Object?> get props => [id];
 }

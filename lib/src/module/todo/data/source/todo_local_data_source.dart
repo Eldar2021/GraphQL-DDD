@@ -21,38 +21,32 @@ class TodoLocalRepoImpl extends TodoLocalDataSource with HiveMixin {
   final Box<String> _box;
 
   @override
-  Future<void> cacheTodos(List<Todo> models) async {
+  Future<void> cacheTodos(List<Todo> models) async => _put(cachedTodos, models);
+
+  @override
+  Future<void> cacheUsers(List<User> models) async => _put(cachedUsers, models);
+
+  Future<void> _put(String key, List<Model> _models) async {
     try {
-      await put(cachedTodos, models);
+      await put(key, _models);
     } catch (e) {
       throw CacheExc('$e');
     }
   }
 
   @override
-  Future<void> cacheUsers(List<User> models) async {
-    try {
-      await put(cachedUsers, models);
-    } catch (e) {
-      throw CacheExc('$e');
-    }
-  }
+  List<Todo>? getTodos() => _getData<Todo>(cachedTodos, Todo.fromJson);
 
   @override
-  List<Todo>? getTodos() {
-    final modelString = get(cachedTodos);
-    if (modelString != null) {
-      return modelType<Todo>(modelString, Todo.fromJson);
-    } else {
-      return null;
-    }
-  }
+  List<User>? getUsers() => _getData<User>(cachedUsers, User.fromJson);
 
-  @override
-  List<User>? getUsers() {
-    final modelString = get(cachedUsers);
+  List<T>? _getData<T>(
+    String key,
+    T Function(Map<String, dynamic> body) fromJson,
+  ) {
+    final modelString = get(key);
     if (modelString != null) {
-      return modelType<User>(modelString, User.fromJson);
+      return modelType<T>(modelString, fromJson);
     } else {
       return null;
     }

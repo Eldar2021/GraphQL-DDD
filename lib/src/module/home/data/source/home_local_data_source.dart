@@ -27,26 +27,22 @@ class HomeLocalDataSourceImpl extends HomeLocalDataSource with HiveMixin {
 
   @override
   Future<void> cacheCharacters(List<Character> models, int page) async {
-    try {
-      if (_isFirstPage(page)) await put(cachedCharacters, models);
-    } catch (e) {
-      throw CacheExc('$e');
-    }
+    return _put<Character>(page, cachedCharacters, models);
   }
 
   @override
   Future<void> cacheEpisodes(List<Episode> models, int page) async {
-    try {
-      if (_isFirstPage(page)) await put(cachedEpisodes, models);
-    } catch (e) {
-      throw CacheExc('$e');
-    }
+    return _put<Episode>(page, cachedEpisodes, models);
   }
 
   @override
   Future<void> cacheLocations(List<Location> models, int page) async {
+    return _put<Location>(page, cachedLocations, models);
+  }
+
+  Future<void> _put<T>(int page, String key, List<Model> models) async {
     try {
-      if (_isFirstPage(page)) await put(cachedLocations, models);
+      if (_isFirstPage(page)) await put(key, models);
     } catch (e) {
       throw CacheExc('$e');
     }
@@ -54,38 +50,28 @@ class HomeLocalDataSourceImpl extends HomeLocalDataSource with HiveMixin {
 
   @override
   List<Character>? getLastCharacters(int page) {
-    try {
-      final modelsString = get(cachedCharacters);
-      if (_isFirstPage(page) && modelsString != null) {
-        return modelType<Character>(modelsString, Character.fromJson);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      throw CacheExc('$e');
-    }
+    return _getData<Character>(cachedCharacters, page, Character.fromJson);
   }
 
   @override
   List<Episode>? getLastEpisodes(int page) {
-    try {
-      final modelsString = get(cachedEpisodes);
-      if (_isFirstPage(page) && modelsString != null) {
-        return modelType<Episode>(modelsString, Episode.fromJson);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      throw CacheExc('$e');
-    }
+    return _getData<Episode>(cachedEpisodes, page, Episode.fromJson);
   }
 
   @override
   List<Location>? getLastLocations(int page) {
+    return _getData<Location>(cachedLocations, page, Location.fromJson);
+  }
+
+  List<T>? _getData<T>(
+    String key,
+    int page,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
     try {
-      final modelsString = get(cachedLocations);
+      final modelsString = get(key);
       if (_isFirstPage(page) && modelsString != null) {
-        return modelType<Location>(modelsString, Location.fromJson);
+        return modelType<T>(modelsString, fromJson);
       } else {
         return null;
       }

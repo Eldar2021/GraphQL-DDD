@@ -30,22 +30,7 @@ void setup(
         sl<NetworkInfo>(),
       ),
     )
-    ..registerLazySingleton<GetCharactersUsecase>(
-      () => GetCharactersUsecase(sl<HomeReposiory>()),
-    )
-    ..registerLazySingleton<GetEpisodesUsecase>(
-      () => GetEpisodesUsecase(sl<HomeReposiory>()),
-    )
-    ..registerLazySingleton<GetLocationsUsecase>(
-      () => GetLocationsUsecase(sl<HomeReposiory>()),
-    )
-    ..registerFactory<HomeCubit>(
-      () => HomeCubit(
-        sl<GetCharactersUsecase>(),
-        sl<GetEpisodesUsecase>(),
-        sl<GetLocationsUsecase>(),
-      ),
-    )
+    ..registerFactory<HomeCubit>(() => HomeCubit(sl<HomeReposiory>()))
     ..registerLazySingleton<TodoRemoteDataSource>(
       () => TodoRemoteImpl(todoClient),
     )
@@ -63,22 +48,13 @@ void setup(
         sl<AddTodoRemoteDataSource>(),
       ),
     )
-    ..registerLazySingleton<GetUsersUsecase>(
-      () => GetUsersUsecase(sl<TodoRepository>()),
-    )
-    ..registerLazySingleton<GetTodosUsecase>(
-      () => GetTodosUsecase(sl<TodoRepository>()),
-    )
-    ..registerLazySingleton(
-      () => AddTodoUsecase(sl<TodoRepository>()),
-    )
     ..registerFactory<TodoCubit>(
-      () => TodoCubit(sl<GetTodosUsecase>()),
+      () => TodoCubit(sl<TodoRepository>()),
     )
     ..registerFactory<UsersCubit>(
-      () => UsersCubit(sl<GetUsersUsecase>()),
+      () => UsersCubit(sl<TodoRepository>()),
     )
     ..registerFactory<AddTodoCubit>(
-      () => AddTodoCubit(sl<AddTodoUsecase>()),
+      () => AddTodoCubit(sl<TodoRepository>()),
     );
 }

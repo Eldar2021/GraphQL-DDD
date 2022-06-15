@@ -2,6 +2,14 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../src.dart';
 
+abstract class HomeReposiory {
+  Future<Either<Exception, List<Character>>> getCharacters(int page);
+
+  Future<Either<Exception, List<Episode>>> getEpisodes(int page);
+
+  Future<Either<Exception, List<Location>>> getLocations(int page);
+}
+
 class HomeRepoImpl extends HomeReposiory with RepoMixin {
   HomeRepoImpl(
     this._localDataSource,
